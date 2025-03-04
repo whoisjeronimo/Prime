@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown bis 13.06</title>
+  <style>
+    /* Grundlegende Einstellungen */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+    /* Video-Hintergrund, der den gesamten Bildschirm ausfüllt */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      object-fit: cover;
+    }
+    /* Container für das Formular in der Mitte */
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    /* Styling für die Eingabefelder und den Button */
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #000;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    /* Countdown-Anzeige */
+    #countdown {
+      margin-top: 20px;
+      font-size: 2em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video-Hintergrund -->
+  <video autoplay muted loop class="video-background">
+    <source src="videoplayback.mp4" type="video/mp4">
+  </video>
+
+  <!-- Formular in der Mitte -->
+  <div class="container" id="form-container">
+    <h1>Daten eingeben</h1>
+    <input type="text" id="name" placeholder="Dein Name">
+    <input type="text" id="insta" placeholder="Dein Instagram-Handle">
+    <br>
+    <button onclick="startCountdown()">Absenden</button>
+  </div>
+
+  <!-- Countdown-Bereich (anfangs versteckt) -->
+  <div id="countdown" style="display: none;"></div>
+
+  <script>
+    function startCountdown() {
+      const name = document.getElementById('name').value;
+      const insta = document.getElementById('insta').value;
+      
+      // Validierung der Eingaben
+      if (name.trim() === '') {
+        alert('Bitte gib deinen Namen ein.');
+        return;
+      }
+      if (insta.trim() === '') {
+        alert('Bitte gib deinen Instagram-Handle ein.');
+        return;
+      }
+      
+      // Formular ausblenden, Countdown anzeigen
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('countdown').style.display = 'block';
+
+      // Ziel-Datum: 13. Juni (aktuelles Jahr, oder nächstes Jahr, falls bereits vorbei)
+      let targetDate = new Date(new Date().getFullYear(), 5, 13);
+      const now = new Date();
+      if (now > targetDate) {
+        targetDate = new Date(now.getFullYear() + 1, 5, 13);
+      }
+
+      // Countdown-Funktion, die jede Sekunde aktualisiert wird
+      const countdownInterval = setInterval(function() {
+        const now = new Date();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          // Countdown abgelaufen – feste Koordinaten anzeigen:
+          document.getElementById('countdown').innerHTML =
+            "Countdown abgelaufen!<br>Koordinaten: 44°32′24″N, 14°54′54″E";
+        } else {
+          // Berechnung der verbleibenden Zeit
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          document.getElementById('countdown').innerHTML =
+            days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
